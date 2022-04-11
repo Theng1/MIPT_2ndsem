@@ -13,4 +13,5 @@ void b_write(adr a, byte val);
 void w_write(adr a, word val);
 void w_read(adr a);
 void load_file(const char * filename);
-void mem_dump(adr start, word n);
+void mem_dump(adr start, word n) {
+void trace(int dbg_lvl, char * format, ...);

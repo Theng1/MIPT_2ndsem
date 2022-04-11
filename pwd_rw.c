@@ -3,6 +3,7 @@
 #define MEMSIZE (64*1024)
 
 byte mem[MEMSIZE];
+int debug_level = 1;
 
 byte b_read(adr a) {
     return mem[a];
@@ -45,4 +46,14 @@ void mem_dump(adr start, word n) {
         //printf("%04hx\n", w);
         printf("%06ho : %06ho\n", i, w);
     }
+}
+
+
+void trace(int dbg_lvl, char * format, ...) {
+	if (dbg_lvl != debug_level)
+		return;
+	va_list ap;
+	va_start (ap, format);
+	vprintf(format, ap);
+	va_end(ap);	
 }
