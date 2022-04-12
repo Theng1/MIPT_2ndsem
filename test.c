@@ -1,19 +1,26 @@
 #include "test.h"
 #include "pdp11.h"
+#include "commands.h"
+
+byte mem[MEMSIZE];
+word reg[8];
+
 
 void run() {
-    byte b0 = 0x0a;
-    b_write(2, b0);
-    byte bres = b_read(2);
-    printf("%02hhx = %02hhx\n", b0, bres);
-
-    adr a = 4;
-    byte b1 = 0xcb;
-    b0 = 0x0a;
-    word w = 0x0b0a;
-    b_write(a, b0);
-    b_write(a+1, b1);
-    word wres = w_read(a);
-    printf("%04hx=%02hhx%02hhx\n", wres, b1, b0);
-    w_write(a, w);
+    pc = 01000;
+   while (1)
+   {
+       word w = w_read(pc);
+       printf("%06o %06o: ", pc, w);
+       pc += 2;
+       if (w == 0) {
+           printf("halt ");
+           do_halt();
+       }
+       else if ((w & 0xF000) == 0010000)
+       {
+           printf("mov ");
+           do_mov();
+       }
+   }
 }
