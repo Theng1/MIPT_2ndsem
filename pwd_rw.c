@@ -19,23 +19,26 @@ word w_read(adr a) {
 }
 
 void w_write(adr a, word val) {
-    byte val1 = (byte)(val >> 8);
-    byte val2 = (byte)(val);
-    b_write(a, val2);
-    b_write(a+1, val1);
-    //printf("%02hhx%02hhx\n", val1, val2);
+    if (a < 8) {
+        reg[a] = val;
+    } else {
+        mem[a] = val & MASK;
+        mem[a+1] = val >> 8 & MASK;
+    }
 }
 
-void load_file(FILE * f) {
+void load_file(const char * filename) {
+    FILE * f = fopen(filename, "r");
     adr a, n;
     byte x;
     while (fscanf(f, "%x%x", &a, &n) == 2)
     {
         for (adr i = a; i < a + n; i++) {
-            scanf("%hhx", &x);
+            fscanf(f, "%hhx", &x);
             b_write(i, x);
         }
     }
+    fclose(f);
 }
 
 void mem_dump(adr start, word n) {

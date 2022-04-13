@@ -1,0 +1,2 @@
+gcc -g -o  a.exe main.c test.c commands.c pwd_rw.c 
+valgrind ./a.exe

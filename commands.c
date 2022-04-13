@@ -1,29 +1,27 @@
 #include "pdp11.h"
+#include "commands.h"
 
 byte mem[MEMSIZE];
 word reg[8];
+Arg ss, dd;
+word nn, r;
+byte xx;
 
-Commands cmd[] = {
-    {0170000, 0010000, "mov", do_mov},
-    {0170000, 0060000, "add", do_add},
-};
 void print() {
-    for (int x = 0; x < 8; x++){
-        printf("R%d=%06o", x, reg[x]);
+    for (int i = 0; i < 8; i++){
+        printf("R%d=%06o\n", i, reg[i]);
     }
     printf("\n");
 }
 
 void do_add() {
-
 }
 
 void do_mov() {
-
 }
 
 void do_nothing() {
-
+    print();
 }
 
 void do_halt() {
