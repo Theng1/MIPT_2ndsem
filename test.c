@@ -10,6 +10,7 @@ Commands cmd[] = {
     {0111111, 0000000, "halt", do_halt, NO_PARAMS},
 };
 
+
 void run() {
     pc = 01000;
     while (1)
