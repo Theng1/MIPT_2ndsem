@@ -62,47 +62,6 @@ Arg get_ssdd(int byte, word w) {
             arg.val = b_read(arg.adr);
         printf("-(R%d)", r);
         break;
-    case 5:
-        reg[r] -= 2;
-        arg.adr = reg[r];
-        arg.adr = w_read(arg.adr);
-        if (byte == 0)
-            arg.val = w_read(arg.adr);
-        else
-            arg.val = b_read(arg.adr);
-        printf("@-(R%d) ", r);
-        break;
-    case 6:
-        nn = w_read(pc);
-        pc += 2;
-        arg.adr = reg[r] + nn;
-        // arg.adr = w_read(arg.adr);
-        if (byte == 0)
-            arg.val =  w_read(arg.adr);
-        else
-            arg.val = b_read(arg.adr);
-        if (r == 7)
-            printf("%o ", arg.adr);
-        else
-            printf("%o(R%d)", nn, r);
-        break;
-    case 7:
-        nn = w_read(pc);
-        pc += 2;
-        arg.adr = reg[r] + nn;
-        arg.adr = w_read(arg.adr);
-        if (byte == 0) {
-            arg.adr = w_read(arg.adr);
-            arg.val = w_read(arg.adr);
-        } else {
-            arg.adr = b_read(arg.adr);
-            arg.val = b_read(arg.adr);
-        }
-        if (r == 7)
-            printf("@%o ", nn);
-        else
-            printf("@%o(R%d) ", nn, r);
-        break;
     }
     return arg;
 }
@@ -123,9 +82,9 @@ int get_r (word w) {
 
 void print() {
     for (int i = 0; i < 8; i++){
-        printf("R%d=%06o\n", i, reg[i]);
+        printf("R%d=%01o\n", i, reg[i]);
     }
-    printf("\n");
+    //printf("\n");
 }
 
 void do_add() {
@@ -147,6 +106,7 @@ void do_clr() {
 
 void do_nothing() {
     print();
+    exit(0);
 }
 
 void do_halt() {

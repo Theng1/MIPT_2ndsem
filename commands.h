@@ -14,7 +14,7 @@ typedef struct
     word mask;
     word opcode;
     char * name;
-    void (*do_func)(void);
+    void (*do_func)();
     char params;
 } Commands;
 
@@ -23,6 +23,7 @@ typedef struct {
     adr adr;  //адрес аргумента
 } Arg;
 
+Arg get_ssdd(int byte, word w);
 void print();
 void do_add();
 void do_mov();
