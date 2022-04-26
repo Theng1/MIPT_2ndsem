@@ -2,7 +2,7 @@
 
 int main()
 {
-    load_file("test/1_sum/sum.o");
+    load_file("pdp11_tests/02_sob_mode3/02_sob_mode3.pdp.o");
     run();
     return 0;
 }

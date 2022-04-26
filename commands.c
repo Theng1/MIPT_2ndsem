@@ -31,7 +31,7 @@ Arg get_ssdd(int byte, word w) {
             arg.val = w_read(arg.adr);
         else
             arg.val = b_read(arg.adr);
-        if (r < 6)
+        if (byte && r < 6)
             reg[r] ++;
         else
             reg[r] += 2;    // +2 word, r6, r7
@@ -54,7 +54,10 @@ Arg get_ssdd(int byte, word w) {
             printf("@(R%d) ", r);
         break;
     case 4:
-        reg[r] -= 2;
+        if (byte && r < 6)
+            reg[r] --;
+        else
+            reg[r] -= 2;    // -2 word, r6, r7
         arg.adr = reg[r];
         if (byte == 0)
             arg.val = w_read(arg.adr);
@@ -95,13 +98,18 @@ void do_mov() {
     w_write(dd.adr, (ss.val & 0xFFFF));
 }
 void do_movb() {
-
+    b_write(dd.adr, ss.val);
 }
 void do_sob() {
+    //reg[r] --;
+    // printf("nn = %o ", nn);
+    if (--reg[r] != 0)
+        pc = pc - (2 * nn);
+    printf("%06o ", pc);
 
 }
 void do_clr() {
-
+    w_write(dd.adr, 0);
 }
 
 void do_nothing() {

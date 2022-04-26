@@ -24,6 +24,9 @@ typedef struct {
 } Arg;
 
 Arg get_ssdd(int byte, word w);
+char get_nn (word w);
+char get_xx (word w);
+int get_r (word w);
 void print();
 void do_add();
 void do_mov();

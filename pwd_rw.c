@@ -48,3 +48,9 @@ void mem_dump(adr start, word n) {
         printf("%06ho : %06ho\n", i, w);
     }
 }
+void reg_print()
+{
+    for (int i = 0; i < 8; i++)
+        printf("r%d:%o ", i, reg[i]);
+    printf("\n");
+}
