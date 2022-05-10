@@ -1,4 +1,3 @@
-#include "pdp11.h"
 #include "commands.h"
 
 byte mem[MEMSIZE];
@@ -39,6 +38,7 @@ Arg get_ssdd(int byte, word w) {
             printf("#%o ", arg.val);
         else
             printf("(R%d)+ ", r);
+        //printf("%06o  ", arg.val);
         break;
     case 3:
         arg.adr = reg[r];
@@ -105,7 +105,7 @@ void do_sob() {
     // printf("nn = %o ", nn);
     if (--reg[r] != 0)
         pc = pc - (2 * nn);
-    printf("%06o ", pc);
+    //printf("%06o ", pc);
 
 }
 void do_clr() {
@@ -119,6 +119,7 @@ void do_nothing() {
 
 void do_halt() {
     printf("\n");
+    reg_print();
     print();
     printf("THE END!!!\n");
     exit(0);

@@ -23,6 +23,8 @@ typedef struct {
     adr adr;  //адрес аргумента
 } Arg;
 
+extern Arg ss, dd;
+
 Arg get_ssdd(int byte, word w);
 char get_nn (word w);
 char get_xx (word w);

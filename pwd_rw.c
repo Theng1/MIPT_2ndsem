@@ -4,17 +4,32 @@ byte mem[MEMSIZE];
 word reg[8];
 
 byte b_read(adr a) {
-    return mem[a];
+    if (a < 8) {
+        return reg[a];
+    } else {
+        return mem[a];
+    }
 }
 
 void b_write(adr a, byte val) {
-    mem[a] = val;
+    if (a < 8) {
+        if ((val >> 7) & 1) {
+            reg[a] = (val & 0xFF) | 0xFF00;
+        } else {
+            reg[a] = val & 0xFF;
+        }
+    } else {
+        mem[a] = val;
+    }
 }
 
 word w_read(adr a) {
-    word w = ((word)mem[a+1]) << 8;
-    //printf("w = %x\n", w);
-    w = w | mem[a];
+    word w;
+    if (a < 8) {
+        w = (reg[a + 1] << 8) | reg[a];
+    } else {
+        w = (mem[a + 1] << 8) | mem[a];
+    }
     return w;
 }
 
@@ -51,6 +66,6 @@ void mem_dump(adr start, word n) {
 void reg_print()
 {
     for (int i = 0; i < 8; i++)
-        printf("r%d:%o ", i, reg[i]);
+        printf("r%d:%06o ", i, reg[i]);
     printf("\n");
 }

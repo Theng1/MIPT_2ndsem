@@ -29,8 +29,6 @@ void run() {
             if ((w & x.mask) == x.opcode) {
                 printf("%s ", x.name);
                 int byte = (w >> 15) & 1;
-                if (x.params & HAS_NN)
-                    nn = get_nn(w);
                 if (x.params & HAS_RL)
                     r = get_r(w >> 6) & 7;
                 if (x.params & HAS_RR)
@@ -39,7 +37,11 @@ void run() {
                     ss = get_ssdd(byte, w >> 6);
                 if (x.params & HAS_DD)
                     dd = get_ssdd(byte, w);
-                
+                if (x.params & HAS_NN)
+                {   
+                    nn = get_nn(w);
+                    printf("%o ", pc - 2 * nn);
+                }
                 x.do_func();
                 printf("\n");
                 reg_print();
