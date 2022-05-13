@@ -1,10 +1,13 @@
 #include "commands.h"
 
-byte mem[MEMSIZE];
-word reg[8];
-Arg ss, dd;
-word nn, r;
-byte xx;
+extern Arg ss, dd;
+extern byte mem[MEMSIZE];
+extern word reg[8];
+extern Arg ss, dd;
+extern word nn, r;
+extern signed char xx;
+extern int b;
+extern char Z, N, V, C;
 
 Arg get_ssdd(int byte, word w) {
     r = w & 7;
@@ -83,22 +86,46 @@ int get_r (word w) {
     return r;
 }
 
-void print() {
-    for (int i = 0; i < 8; i++){
-        printf("R%d=%01o\n", i, reg[i]);
+void set_NZ(word w) {
+    if (w == 0) {
+        Z = 1;
+        N = 0;
+    } else if (w < 0) {
+        N = 1;
+        Z = 0;
+    } else {
+        N = 0;
+        Z = 0;
     }
-    //printf("\n");
+}
+void set_C(int x) {
+    if ((x >> 16) && (x > 0))
+        C = 1;
+    else
+        C = 0;
+}
+
+void NZVC_print() {
+    printf("%c", N ? 'n' : '-');
+    printf("%c", Z ? 'z' : '-');
+    printf("%c", V ? 'v' : '-');
+    printf("%c", C ? 'c' : '-');
+    printf(" ");
 }
 
 void do_add() {
-    w_write(dd.adr, (dd.val + ss.val) & 0xFFFF);
+    word res = (dd.val + ss.val) & 0xFFFF;
+    w_write(dd.adr, res);
+    set_NZ(res);
 }
 
 void do_mov() {
     w_write(dd.adr, (ss.val & 0xFFFF));
+    set_NZ(ss.val);
 }
 void do_movb() {
     b_write(dd.adr, ss.val);
+    set_NZ(ss.val);
 }
 void do_sob() {
     //reg[r] --;
@@ -112,15 +139,64 @@ void do_clr() {
     w_write(dd.adr, 0);
 }
 
+void do_tst() {
+    unsigned int val = w_read(dd.adr);
+    set_NZ(w_read(dd.adr));
+    //printf("dd.a = %06o val = %06o b = %d ss.val = %06o", dd.adr, val, b, ss.val);
+
+}
+
+void do_tstb() {
+    unsigned int val = b_read(dd.adr);
+    set_NZ(b_read(dd.adr));
+    //printf("dd.a = %06o val = %06o b = %d ss.val = %06o", dd.adr, val, b, ss.val);
+}
+
+void do_cmp() {
+    w_write(dd.adr, ss.val - dd.val);
+    set_NZ(ss.val - dd.val);
+}
+
+void do_cmpb() {
+    b_write(dd.adr, ss.val - dd.val);
+    set_NZ(ss.val - dd.val);
+}
+
+void do_br() {
+    pc = pc + 2 * xx;
+}
+
+void do_beq() {
+    if(Z)
+        do_br();
+}
+
+void do_bne() {
+    if(Z == 0)
+        do_br();
+}
+
+void do_bmi() {
+    if(N)
+        do_br();
+}
+
+void do_bpl() {
+    if(N == 0)
+        do_br();
+}
+
+void do_jmp() {
+	pc = dd.val;
+}
+
 void do_nothing() {
-    print();
     exit(0);
 }
 
 void do_halt() {
     printf("\n");
     reg_print();
-    print();
     printf("THE END!!!\n");
     exit(0);
 }

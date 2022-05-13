@@ -46,6 +46,11 @@ void load_file(const char * filename) {
     FILE * f = fopen(filename, "r");
     adr a, n;
     byte x;
+    if (f == NULL)
+    {
+        perror(filename);
+        exit(0);
+    }
     while (fscanf(f, "%x%x", &a, &n) == 2)
     {
         for (adr i = a; i < a + n; i++) {
