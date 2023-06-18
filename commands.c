@@ -90,7 +90,7 @@ void set_NZ(word w) {
     if (w == 0) {
         Z = 1;
         N = 0;
-    } else if (w < 0) {
+    } else if ((w >> 15) & 1) {
         N = 1;
         Z = 0;
     } else {
@@ -99,11 +99,17 @@ void set_NZ(word w) {
     }
 }
 void set_C(int x) {
-    if ((x >> 16) && (x > 0))
+    if (x >> 15)
         C = 1;
     else
         C = 0;
 }
+
+void NZVC(word x) {
+    Z = (x == 0);
+    N = (b ? x >> 7 : x >> 15) & 1;
+}
+
 
 void NZVC_print() {
     printf("%c", N ? 'n' : '-');
@@ -120,8 +126,10 @@ void do_add() {
 }
 
 void do_mov() {
-    w_write(dd.adr, (ss.val & 0xFFFF));
-    set_NZ(ss.val);
+    word res;
+    res = ss.val;
+    w_write(dd.adr, ss.val);
+    set_NZ(res);
 }
 void do_movb() {
     b_write(dd.adr, ss.val);
@@ -133,8 +141,58 @@ void do_sob() {
     if (--reg[r] != 0)
         pc = pc - (2 * nn);
     //printf("%06o ", pc);
-
 }
+
+void do_rol() {
+    word res = (dd.val << 1) & 0177777;
+    w_write(dd.adr, res);
+    set_NZ(res);
+}
+void do_rolb() {
+    word res = (dd.val << 1) & 0177777;
+    b_write(dd.adr, res);
+    set_NZ(res);
+}
+
+void do_com() {
+    word res = dd.val ^ 0177777;
+    w_write(dd.adr, res);
+    set_NZ(res);
+    C = 1;
+}
+void do_comb() {
+    word res = dd.val ^ 0177777;
+    b_write(dd.adr, res);
+    set_NZ(res);
+    C = 1;
+}
+
+void do_ror() {
+    word res;
+    if (C) {
+        res = (dd.val >> 1) | 0100000;
+        w_write(dd.adr, res);
+    } else {
+        res = (dd.val >> 1);
+        w_write(dd.adr, res);
+    }
+    set_C(dd.val);
+    set_NZ(res);
+}
+
+void do_rorb() {
+    word res;
+    if (C) {
+        res = (dd.val >> 1) | 0100000;
+        b_write(dd.adr, res);
+    } else {
+        res = (dd.val >> 1);
+        b_write(dd.adr, res);
+    }
+    set_C(dd.val);
+    set_NZ(res);
+}
+
 void do_clr() {
     w_write(dd.adr, 0);
 }
@@ -196,6 +254,7 @@ void do_nothing() {
 
 void do_halt() {
     printf("\n");
+    NZVC_print();
     reg_print();
     printf("THE END!!!\n");
     exit(0);

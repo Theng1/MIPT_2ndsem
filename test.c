@@ -16,6 +16,12 @@ Commands cmd[] = {
     {0170000, 0110000, "movb", do_movb, HAS_SS | HAS_DD},
     {0170000, 0060000, "add", do_add, HAS_SS | HAS_DD},
     {0177000, 0077000, "sob", do_sob, HAS_NN | HAS_RL},
+    {0177700, 0006000, "ror", do_ror, HAS_DD},
+    {0177700, 0106000, "rorb", do_rorb, HAS_DD},
+    {0177700, 0106100, "rolb", do_rolb, HAS_DD},
+    {0177700, 0006100, "rol", do_rolb, HAS_DD},
+    {0177700, 0005100, "com", do_com, HAS_DD},
+    {0177700, 0105100, "comb", do_comb, HAS_DD},
     {0177700, 0005000, "clr", do_clr, HAS_DD},
     {0177400, 0001400, "beq", do_beq, HAS_XX},
     {0177400, 0001000, "bne", do_bne, HAS_XX},
@@ -66,7 +72,9 @@ void run() {
                 
                 x.do_func();
                 printf("\n");
+                NZVC_print();
                 reg_print();
+                
                 //print();
                 break;
             }

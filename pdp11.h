@@ -6,6 +6,8 @@
 #define MEMSIZE (64*1024)
 #define pc reg[7]
 #define sp reg[6]
+#define odata 0177566
+#define ostat 0177564
 
 typedef unsigned char byte; //8 bit
 typedef unsigned int word;  //16 bit
